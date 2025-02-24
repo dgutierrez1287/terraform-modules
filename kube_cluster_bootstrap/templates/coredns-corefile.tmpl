@@ -1,0 +1,28 @@
+.:53 {
+  errors
+  health
+  ready
+  kubernetes ${local_cluster_dns_zone} in-addr.arpa ip6.arpa {
+    pods insecure
+    fallthrough in-addr.arpa ip6.arpa
+  }
+  hosts /etc/coredns/NodeHosts {
+    fallthrough
+  }
+  prometheus :9153
+  forward . /etc/resolv.conf
+  cache 30
+  loop
+  reload
+  loadbalance
+}
+%{ for dns in local_dns_zones ~}
+${dns.zone}:53 {
+  forward . ${dns.server1} ${dns.server2} {
+    policy random
+    health_check 5s
+  }
+  cache 30
+}
+%{ endfor ~}
+
