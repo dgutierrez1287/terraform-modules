@@ -1,10 +1,10 @@
-resource "kubernetes_service_account" "vault_auth" {
+resource "kubernetes_service_account" "vault_auth_sa" {
   metadata {
-    name = "vault-auth"
+    name = "vault-auth-sa"
   }
 }
 
-resource "kubernetes_cluster_role_binding" "vault_role" {
+resource "kubernetes_cluster_role_binding" "vault_auth_rb" {
   metadata {
     name = "role-tokenreview-binding"
   }
@@ -15,7 +15,7 @@ resource "kubernetes_cluster_role_binding" "vault_role" {
   }
   subject {
     kind = "ServiceAccount"
-    name = "vault-auth"
+    name = "vault-auth-sa"
     namespace = "default"
   }
 }
@@ -23,9 +23,9 @@ resource "kubernetes_cluster_role_binding" "vault_role" {
 resource "kubernetes_secret" "vault_auth_token" {
   metadata {
     name = "vault-auth-token"
-    namespace = kubernetes_service_account.vault_auth.metadata[0].namespace
+    namespace = kubernetes_service_account.vault_auth_sa.metadata[0].namespace
     annotations = {
-      "kubernetes.io/service-account.name" = kubernetes_service_account.vault_auth.metadata[0].name
+      "kubernetes.io/service-account.name" = kubernetes_service_account.vault_auth_sa.metadata[0].name
     }
   }
   type = "kubernetes.io/service-account-token"
@@ -34,7 +34,7 @@ resource "kubernetes_secret" "vault_auth_token" {
 data "kubernetes_secret" "vault_auth_token" {
   metadata {
     name = kubernetes_secret.vault_auth_token.metadata[0].name
-    namespace = kubernetes_service_account.vault_auth.metadata[0].namespace
+    namespace = kubernetes_service_account.vault_auth_sa.metadata[0].namespace
   }
 }
 
