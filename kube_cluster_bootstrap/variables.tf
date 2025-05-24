@@ -56,6 +56,12 @@ variable "env_cacert_secret_namespace" {
   type = string
 }
 
+variable "upstream_dns_servers" {
+  description = "The setting for upstream dns servers"
+  type = list(string)
+  default = ["8.8.8.8", "8.8.4.4"]
+}
+
 variable "local_dns_config" {
   description = "The configuration for local DNS"
   type = map(object({

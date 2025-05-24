@@ -10,7 +10,7 @@
     fallthrough
   }
   prometheus :9153
-  forward . /etc/resolv.conf
+  forward . %{ for dns_server in upstream_dns_servers}${dns_server} %{endfor}
   cache 30
   loop
   reload

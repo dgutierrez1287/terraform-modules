@@ -15,7 +15,11 @@ resource "kubernetes_config_map_v1_data" "coredns_local_patch" {
   }
 
   data = {
-    Corefile = templatefile("${path.module}/templates/coredns-corefile.tmpl", {local_dns_zones = local.local_zones, local_cluster_dns_zone = var.local_cluster_dns_zone})
+    Corefile = templatefile("${path.module}/templates/coredns-corefile.tmpl", {
+      local_dns_zones = local.local_zones, 
+      local_cluster_dns_zone = var.local_cluster_dns_zone,
+      upstream_dns_servers = var.upstream_dns_servers
+    })
   }
   force = true
 }
