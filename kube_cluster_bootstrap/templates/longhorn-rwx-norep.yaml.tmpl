@@ -1,0 +1,15 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-storageclass-rwx-norep
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+parameters:
+  accessMode: ReadWriteMany
+  nfsOptions: "vers=4.1"
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "30"
